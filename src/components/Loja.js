@@ -84,6 +84,7 @@ export default class Loja extends React.Component {
         return 0;
         });
         return comparaValor
+        console.log(comparaValor)
     }
     
 
