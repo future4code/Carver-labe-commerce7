@@ -70,39 +70,56 @@ const meteoritos = listaDeMeteoritos.map((meteorito) => {
     )
 });
 
-
 export default class Loja extends React.Component {
+    state = {
+        sequencia: "",
+    }
 
-    compararValor = () => {
-        const comparaValor = listaDeMeteoritos.sort((a,b)=>{
-        if (a.valor > b.valor) {
-        return 1;
-        }
-        if (a.valor < b.valor) {
-        return -1;
-        }
-        return 0;
-        });
-        return comparaValor
-        console.log(comparaValor)
+    onChangeOrdenacao = (event) =>{
+        this.setState({sequencia: event.target.value})
+    }
+
+    listaCrescente = (event) => {
+        const crescente = listaDeMeteoritos.sort((a,b)=>{
+            return a.valor.localeCompare(b.valor)
+        })
+        this.setState({sequencia: event})
     }
     
+    listaDecrescente = (event) => {
+        const decrescente = listaDeMeteoritos.sort((a,b)=>{
+            return b.valor.localeCompare(a.valor)
+        })
+        this.setState({sequencia: event})
+    }
 
     render() {
-    return (
+
+        const listaOrdenada = (event) =>{
+            switch (this.state.sequencia){
+                case "crescente":
+                    return this.listaCrescente()
+                case "decrescente":
+                    return this.listaDecrescente()
+                }
+            this.setState({sequencia: event})
+        }
+          
+        return (
         <ConteinerLoja>
         <Cabecalho>
             <h4>Quantidade de produtos: 2</h4>
             <Selecionar>
                 <h5>Ordenação</h5>
-                <select onChange={this.compararValor}>
-                <option value = "Crescente">Crescente</option>
-                <option value = "Decrescente">Decrescente</option>
+                <select value={this.state.sequencia} onChange={this.onChangeOrdenacao}>
+                <option value = "crescente" onChange={this.state.listaOrdenada}>Crescente</option>
+                <option value = "decrescente" onChange={this.state.listaOrdenada}>Decrescente</option>
                 </select>
             </Selecionar>
          </Cabecalho>
             <DisplayProdutos>
             {meteoritos}
+            {this.state.sequencia}
             </DisplayProdutos>
         </ConteinerLoja>
         )
