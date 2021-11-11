@@ -35,10 +35,10 @@ const DisplayProdutos = styled.div`
 
 
 
-
 export default class Loja extends React.Component {
     state = {
         sequencia: "",
+
 
         listaDeMeteoritos: [
             {
@@ -135,6 +135,57 @@ export default class Loja extends React.Component {
                     {this.state.sequencia}
                 </DisplayProdutos>
             </ConteinerLoja>
+
+    }
+
+    onChangeOrdenacao = (event) =>{
+        this.setState({sequencia: event.target.value})
+    }
+
+    listaCrescente = (event) => {
+        const crescente = listaDeMeteoritos.sort((a,b)=>{
+            return a.valor.localeCompare(b.valor)
+        })
+        this.setState({sequencia: event})
+    }
+    
+    listaDecrescente = (event) => {
+        const decrescente = listaDeMeteoritos.sort((a,b)=>{
+            return b.valor.localeCompare(a.valor)
+        })
+        this.setState({sequencia: event})
+    }
+
+    render() {
+
+        const listaOrdenada = (event) =>{
+            switch (this.state.sequencia){
+                case "crescente":
+                    return this.listaCrescente()
+                case "decrescente":
+                    return this.listaDecrescente()
+                }
+            this.setState({sequencia: event})
+        }
+          
+        return (
+        <ConteinerLoja>
+        <Cabecalho>
+            <h4>Quantidade de produtos: 2</h4>
+            <Selecionar>
+                <h5>Ordenação</h5>
+                <select value={this.state.sequencia} onChange={this.onChangeOrdenacao}>
+                <option value = "crescente" onChange={this.state.listaOrdenada}>Crescente</option>
+                <option value = "decrescente" onChange={this.state.listaOrdenada}>Decrescente</option>
+                </select>
+            </Selecionar>
+         </Cabecalho>
+            <DisplayProdutos>
+            {meteoritos}
+            {this.state.sequencia}
+            </DisplayProdutos>
+        </ConteinerLoja>
+
         )
     }
 }
