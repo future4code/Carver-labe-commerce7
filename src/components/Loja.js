@@ -35,13 +35,17 @@ const DisplayProdutos = styled.div`
 
 
 
-
 export default class Loja extends React.Component {
     state = {
+
         sequencia: "crescente",
         filtro: "",
         precoMin: "",
         precoMax: "",
+
+
+        sequencia: "",
+
 
         listaDeMeteoritos: [
             {
@@ -49,18 +53,21 @@ export default class Loja extends React.Component {
                 imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem1" width="180" height="200" />,
                 produto: "Pedra Lunar",
                 valor: "200,00"
+
             },
             {
                 id: 2,
                 imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem2" width="180" height="200" />,
                 produto: "Meteorito Saturniano",
                 valor: "400,00"
+
             },
             {
                 id: 3,
                 imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem3" width="180" height="200" />,
                 produto: "Pedaço de cometa",
                 valor: "410,00"
+
             },
             {
                 id: 4,
@@ -96,14 +103,17 @@ export default class Loja extends React.Component {
         switch (this.state.sequencia) {
             case "crescente":
                 return this.listaCrescente();
-
             case "decrescente":
                 return this.listaDecrescente();
-
-            default:
+            default:    
+            case "decrescente":
+                return this.listaDecrescente();
+                
+                default:
         }
 
     }
+
 
     updateFiltro = (event) => {
         this.setState({ filtro: event.target.value })
@@ -172,6 +182,91 @@ export default class Loja extends React.Component {
                     {meteoritos}
                 </DisplayProdutos>
             </ConteinerLoja>
+
+
+
+    render() {
+
+        const meteoritos = this.state.listaDeMeteoritos.map((meteorito) => {
+            return (
+                <Card key={"listaDeMeteoritos.id"}>
+                    <p>{meteorito.imagem}</p>
+                    <p>{meteorito.produto}</p>
+                    <p>{meteorito.valor}</p>
+                    <button>Adicionar ao carrinho</button>
+                </Card>
+            )
+        });
+
+
+        return (
+            <ConteinerLoja key= {"conteinerLoja"}>
+                <Cabecalho key={"cabecalho"}>
+                    <h4 key={"texto"}>Quantidade de produtos: 2</h4>
+                    <Selecionar key={"botaoOrdenacao"}>
+                        <h5 key={"textoOrdenacao"}>Ordenação</h5>
+                        <select key={"botaoSeletor"} value={this.state.sequencia} onChange={this.onChangeOrdenacao}>
+                            <option value="crescente" onChange={this.state.listaOrdenada}>Crescente</option>
+                            <option value="decrescente" onChange={this.state.listaOrdenada}>Decrescente</option>
+                        </select>
+                    </Selecionar>
+                </Cabecalho>
+                <DisplayProdutos key={"cardprodutos"}>
+                    {meteoritos}
+                    {this.state.sequencia}
+                </DisplayProdutos>
+            </ConteinerLoja>
+
+    }
+
+    onChangeOrdenacao = (event) =>{
+        this.setState({sequencia: event.target.value})
+    }
+
+    listaCrescente = (event) => {
+        const crescente = listaDeMeteoritos.sort((a,b)=>{
+            return a.valor.localeCompare(b.valor)
+        })
+        this.setState({sequencia: event})
+    }
+    
+    listaDecrescente = (event) => {
+        const decrescente = listaDeMeteoritos.sort((a,b)=>{
+            return b.valor.localeCompare(a.valor)
+        })
+        this.setState({sequencia: event})
+    }
+
+    render() {
+
+        const listaOrdenada = (event) =>{
+            switch (this.state.sequencia){
+                case "crescente":
+                    return this.listaCrescente()
+                case "decrescente":
+                    return this.listaDecrescente()
+                }
+            this.setState({sequencia: event})
+        }
+          
+        return (
+        <ConteinerLoja>
+        <Cabecalho>
+            <h4>Quantidade de produtos: 2</h4>
+            <Selecionar>
+                <h5>Ordenação</h5>
+                <select value={this.state.sequencia} onChange={this.onChangeOrdenacao}>
+                <option value = "crescente" onChange={this.state.listaOrdenada}>Crescente</option>
+                <option value = "decrescente" onChange={this.state.listaOrdenada}>Decrescente</option>
+                </select>
+            </Selecionar>
+         </Cabecalho>
+            <DisplayProdutos>
+            {meteoritos}
+            {this.state.sequencia}
+            </DisplayProdutos>
+        </ConteinerLoja>
+
         )
     }
 }
