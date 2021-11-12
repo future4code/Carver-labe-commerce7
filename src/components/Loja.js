@@ -1,5 +1,7 @@
 import React from "react"
 import styled from "styled-components";
+import Carrinho from "./Carrinho";
+
 
 const ConteinerLoja = styled.div`
     width: 100vw;
@@ -36,21 +38,23 @@ const DisplayProdutos = styled.div`
     flex-wrap: wrap;
 `
 
-const Carrinho = styled.div`
+const CarrinhoDiv = styled.div`
     border: 1px solid black;
     width: 15vw;
     height: 40vh;
     text-align: center;
 `
 
+
 export default class Loja extends React.Component {
     state = {
 
+        itensNaLoja: "",
         sequencia: 1,
         filtro: "",
         precoMin: "",
         precoMax: "",
-        carrinho: [{
+        carrinho:[ {
            quantidade: 1,
            item: 
             {id: 5,
@@ -58,33 +62,33 @@ export default class Loja extends React.Component {
             produto: 200.00,
             valor:"",
             comprado: true}
-         }],
+        }],
 
         listaDeMeteoritos: [
             {
                 id: 1,
-                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem1" width="180" height="200" />,
+                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem1" width="100%" height="200" />,
                 produto: "Pedra Lunar",
                 valor: 202.57,
                 comprado: false
             },
             {
                 id: 2,
-                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem2" width="180" height="200" />,
+                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem2" width="100%" height="200" />,
                 produto: "Meteorito Saturniano",
                 valor: 402.03,
                 comprado: false
             },
             {
                 id: 3,
-                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem3" width="180" height="200" />,
+                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem3" width="100%" height="200" />,
                 produto: "Pedaço de cometa",
                 valor: 300.52,
                 comprado: false
             },
             {
                 id: 4,
-                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem4" width="180" height="200" />,
+                imagem: <img src="https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/06/4054_ECA83EB40B0EB2BD.jpg?w=1024" alt="imagem4" width="100%" height="200" />,
                 produto: "Meteorito Venusiano",
                 valor: 210.89,
                 comprado: false
@@ -137,9 +141,43 @@ export default class Loja extends React.Component {
             },()=>console.log(this.state.carrinho))
         }
     }
+    carrinhoProduto = ()=>{
+        return this.state.carrinho.map ((carrinho)=>{return (
+            <Carrinho
+            item = {carrinho} 
+            funcao = {this.removerProdutoCarrinho}
+            />
+                
+        )})
+        
+
+    }
+
+    removerProdutoCarrinho = (event)=>{
+        let produtoEscolhido = this.state.listaDeMeteoritos.filter((produto)=>{
+            return produto.id === event.target.value
+        })
+        let carrinho = this.state.carrinho.filter((item)=>{
+            return item.item.id !== event.target.value
+        }) 
+        this.setState({carrinho:[...carrinho]})
+    }
+
+    
+    valorCarrinho = ()=>{
+        let valorTotal = 0
+        this.state.carrinho.map ((cesto)=>{
+            valorTotal = (parseFloat(cesto.item.valor)*parseFloat(cesto.quantidade))+ valorTotal
+         })
+         return valorTotal 
+    }
+
+
 
     render() {
         
+        let carrinhoProduto = this.carrinhoProduto () 
+
         const meteoritos = this.state.listaDeMeteoritos
             .filter(meteoros => {
                 return meteoros.produto.toLowerCase().includes(this.state.filtro.toLowerCase())
@@ -154,6 +192,8 @@ export default class Loja extends React.Component {
                 return this.state.sequencia * (meteoros1.valor - meteoros2.valor)
             })
             .map((meteorito) => {
+
+                
                 return (
                     <Card /* key={"card-produtos"} */>
                         <p /* key={"imagem"} */>{meteorito.imagem}</p>
@@ -163,9 +203,8 @@ export default class Loja extends React.Component {
                     </Card>
                 )
             })
-        
-        return (
             
+        return (
             <ConteinerLoja /* key={"conteiner-Loja"} */>
                 <input
                     placeholder="Filtro"
@@ -186,7 +225,7 @@ export default class Loja extends React.Component {
                 />
 
                 <Cabecalho /* key={"cabecalho"} */>
-                    <h4 /* key={"texto"} */>Quantidade de produtos: 4</h4>
+                    <h4 /* key={"texto"} */>Quantidade de produtos: {meteoritos.length}</h4>
                     <Selecionar /* key={"botaoOrdenacao"} */>
                         <h5 /* key={"texto-Ordenacao"} */>Ordenação</h5>
                         <select  /* key={"botaoSeletor"} */ value={this.state.sequencia} onChange={this.onChangeOrdenacao}>
@@ -200,10 +239,11 @@ export default class Loja extends React.Component {
                     {meteoritos}
                 </DisplayProdutos>
 
-                <Carrinho>
+                <CarrinhoDiv>
                 <h4>Carrinho</h4>
-
-                </Carrinho>
+                {carrinhoProduto}
+                <p>valor total:<b>{this.valorCarrinho()}</b></p>
+                </CarrinhoDiv>
 
             </ConteinerLoja>
 
