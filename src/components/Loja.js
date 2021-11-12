@@ -50,7 +50,15 @@ export default class Loja extends React.Component {
         filtro: "",
         precoMin: "",
         precoMax: "",
-        carrinho: "",
+        carrinho: [{
+           quantidade: 1,
+           item: 
+            {id: 5,
+            imagem:"",
+            produto: 200.00,
+            valor:"",
+            comprado: true}
+         }],
 
         listaDeMeteoritos: [
             {
@@ -101,7 +109,33 @@ export default class Loja extends React.Component {
     }
 
     atualizaCarrinho = (event) => {
-        this.setState({carrinho: event.target.value})
+        let produtoEscolhido= this.state.listaDeMeteoritos.filter((meteoros) => {
+            return meteoros.id === event.target.value 
+        })
+        let estoque = 0; 
+        let carrinhoDeCompras = this.state.carrinho.map((meteoro) => {
+            if (meteoro.item.id === event.target.value){
+                meteoro.quantidade++ 
+                estoque++
+            }
+            return meteoro
+        })
+
+
+        if(estoque === 0 ){
+            this.setState({ 
+                carrinho: [{
+                    quantidade:1,
+                    item: produtoEscolhido [0]
+                }]
+
+            },()=> console.log(this.state.carrinho))
+        }else {
+            this.setState({
+                carrinho:carrinhoDeCompras
+
+            },()=>console.log(this.state.carrinho))
+        }
     }
 
     render() {
@@ -125,7 +159,7 @@ export default class Loja extends React.Component {
                         <p /* key={"imagem"} */>{meteorito.imagem}</p>
                         <p /* key={"produto-meteoro"} */>{meteorito.produto}</p>
                         <p /* key={"produto-valor"} */>R$: {meteorito.valor}</p>
-                        <button /* key={"addcarrinho"} */ value={this.state.carrinho} onChange={this.atualizaCarrinho}>Adicionar ao carrinho</button>
+                        <button /* key={"addcarrinho"} */ value = {this.state.carrinho} onClick={this.atualizaCarrinho}>Adicionar ao carrinho</button>
                     </Card>
                 )
             })
